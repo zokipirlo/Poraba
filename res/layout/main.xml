@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#959595">
+    
+    <TextView android:text="Telefonska št:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#000000" android:layout_marginTop="30dp" android:layout_marginLeft="10dp"/>
+    <EditText android:id="@+id/telStEdit" android:layout_width="180dp" android:layout_height="wrap_content" android:layout_marginTop="15dp" android:layout_marginLeft="110dp" />
+    
+    <TextView android:text="Geslo:" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#000000" android:layout_marginTop="90dp" android:layout_marginLeft="10dp"/>
+    <EditText android:id="@+id/gesloEdit" android:layout_width="180dp" android:layout_height="wrap_content" android:layout_marginTop="75dp" android:layout_marginLeft="110dp" android:password="true"/>
+    
+    <CheckBox android:id="@+id/zapomniSiMeCheckbox"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Zapomni si" android:layout_marginTop="130dp" android:layout_marginLeft="10dp"/>
+    <Button android:id="@+id/prijavaButton" android:layout_height="wrap_content" android:text="Prijava" android:layout_marginTop="130dp" android:layout_width="120dp" android:layout_marginLeft="172dp"/>
+    
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Developed by: " android:textColor="#ffffff"  android:layout_marginTop="250dp" android:layout_centerHorizontal="true" android:textStyle="bold"/>
+    <!-- <ImageView android:id="@+id/logo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/jiggy" android:layout_marginTop="350dp" android:layout_centerHorizontal="true" />
+    <ImageView android:id="@+id/logo1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/biokoda" android:layout_marginTop="405dp" android:layout_centerHorizontal="true" />
+    <ImageView android:id="@+id/logo2" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/baner" android:layout_marginTop="190dp" android:layout_centerHorizontal="true" />
+     -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Miha Majcen" android:textColor="#ffffff"  android:layout_marginTop="280dp" android:layout_centerHorizontal="true"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Zoran Smilevski" android:textColor="#ffffff"  android:layout_marginTop="305dp" android:layout_centerHorizontal="true"/>
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Nejc Kikelj" android:textColor="#ffffff"  android:layout_marginTop="330dp" android:layout_centerHorizontal="true"/>
+    
+</RelativeLayout>
+

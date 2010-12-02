@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  >
+  
+	<TextView android:id="@+id/QuotaText"  android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:text="Quota Text" android:layout_marginTop="12dp" android:shadowDx="1" android:shadowDy="1" android:textColor="#260101" android:shadowColor="#868686" android:shadowRadius="2" android:layout_marginLeft="10dp"/>
+	<SeekBar android:id="@+id/QuotaSeek" android:layout_width="fill_parent" android:layout_height="wrap_content" android:clickable="false" android:layout_marginLeft="10dp" android:layout_marginRight="10dp" android:progressDrawable="@drawable/seek" android:layout_marginTop="4dp"/>
+	<TextView android:id="@+id/QuotaStatus" android:text="0 / 0" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerHorizontal="true" android:layout_marginLeft="10dp" android:textColor="#4c1212" android:layout_marginTop="4dp"/>
+
+</LinearLayout>

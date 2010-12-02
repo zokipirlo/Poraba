@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/oldpaper">
+    
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:shadowDx="1" android:shadowDy="1" android:textColor="#260101" android:shadowColor="#868686" android:shadowRadius="2" android:layout_marginLeft="10dp" android:textSize="16sp" android:layout_marginTop="25dp" android:text="Telefonska št.:"/>
+   	<EditText android:id="@+id/telStSettings" android:layout_width="180dp" android:layout_height="wrap_content" android:layout_marginTop="15dp" android:layout_marginLeft="115dp" android:background="@drawable/vnos" android:inputType="phone" android:singleLine="true"/>
+   
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:shadowDx="1" android:shadowDy="1" android:textColor="#260101" android:shadowColor="#868686" android:shadowRadius="2" android:layout_marginLeft="10dp" android:text="Planet geslo:" android:textSize="16sp" android:layout_marginTop="85dp"/>
+    <EditText android:id="@+id/gesloSettings" android:layout_width="180dp" android:layout_height="wrap_content" android:layout_marginTop="75dp" android:layout_marginLeft="115dp" android:password="true" android:background="@drawable/vnos" android:singleLine="true" android:maxLines="1"/>
+    
+    <Button android:id="@+id/shraniButtonSettings" android:layout_height="wrap_content" android:text="Shrani" android:layout_marginTop="130dp" android:layout_width="120dp" android:background="@drawable/gumb" android:layout_marginLeft="175dp"/>
+	
+	<TextView android:id="@+id/settingsZakupljene" android:layout_height="wrap_content" android:layout_width="wrap_content" android:shadowDx="1" android:shadowDy="1" android:textColor="#260101" android:shadowColor="#868686" android:shadowRadius="2" android:layout_marginTop="180dp" android:layout_marginLeft="10dp" android:textSize="16sp" android:text="Prikazane količine:"/>
+	<ScrollView
+		android:id="@+id/scrllvwNo1"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="200dp"
+		android:layout_marginLeft="10dp"> 
+		
+		<LinearLayout android:layout_height="fill_parent" android:id="@+id/QuotasSettingsLayout" android:layout_width="wrap_content" android:orientation="vertical" android:layout_marginLeft="20dp" />
+	</ScrollView>
+
+</RelativeLayout>

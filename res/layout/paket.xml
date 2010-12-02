@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/PaketScroll"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:background="@drawable/oldpaper">
+	
+	<LinearLayout
+		android:id="@+id/PaketLayout"
+	  	android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" >
+	  
+	  	<TextView android:id="@+id/TitleText" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textSize="20dp" android:textStyle="bold" android:layout_gravity="center" android:text="PORABA" android:shadowDx="1" android:shadowDy="1" android:textColor="#260101" android:shadowColor="#868686" android:shadowRadius="2" android:layout_marginTop="5dp"/>
+	</LinearLayout>
+	
+</ScrollView>
