@@ -2,6 +2,7 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:title="Nastavitve" android:id="@+id/nastavitve" />
+<item android:title="Osveži" android:id="@+id/refresh" />
 <item android:title="Avtorji" android:id="@+id/avtorji"/>
 <item android:title="Izhod" android:id="@+id/exit"/>
 </menu>

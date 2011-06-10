@@ -2,7 +2,6 @@ package si.mobitel.monitor;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.apache.http.HttpException;
@@ -32,9 +31,10 @@ import org.apache.http.util.EntityUtils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.util.Log;
 
-public class RequestData {
+public class RequestData extends AsyncTask<String, Void, MonitorResult> {
 	Context c;
 	
 	public RequestData(Context context)
@@ -42,8 +42,27 @@ public class RequestData {
 		c = context;
 	}
 	
-	public MonitorResult podatki(String telefonska, String geslo) {
-    	MonitorResult monitorResult = null;
+	@Override
+	protected void onPreExecute()
+	{
+		if (c instanceof PorabaActivity)
+		{
+			((PorabaActivity)c).showLoader();
+		}
+		else if (c instanceof SettingsActivity)
+		{
+			((SettingsActivity)c).showLoader();
+		}
+		super.onPreExecute();
+	}
+
+	@Override
+	protected MonitorResult doInBackground(String... params)
+	{
+		String telefonska = params[0];
+		String geslo = params[1];
+		
+		MonitorResult monitorResult = null;
     	
     	ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -82,10 +101,42 @@ public class RequestData {
 				monitorResult = tryMNamiznik(telefonska, geslo, status == 1);
 			}
 		}
+		
 		return monitorResult;
-        
-    }
-	
+	}
+
+	@Override
+	protected void onPostExecute(MonitorResult result)
+	{
+		if (c instanceof PorabaActivity)
+		{
+			((PorabaActivity)c).hideLoader();
+			((PorabaActivity)c).showResult(result);
+		}
+		else if (c instanceof SettingsActivity)
+		{
+			((SettingsActivity)c).hideLoader();
+			((SettingsActivity)c).showResult(result);
+		}
+		super.onPostExecute(result);
+	}
+
+	@Override
+	protected void onCancelled()
+	{
+		if (c instanceof PorabaActivity)
+		{
+			((PorabaActivity)c).hideLoader();
+			((PorabaActivity)c).showResult(null);
+		}
+		else if (c instanceof SettingsActivity)
+		{
+			((SettingsActivity)c).hideLoader();
+			((SettingsActivity)c).showResult(null);
+		}
+		super.onCancelled();
+	}
+
 	private MonitorResult tryMVrata(String telefonska, String geslo, boolean wireless) {
 		MonitorResult result = null;
 		
