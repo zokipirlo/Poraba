@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import org.eestecmb.oldteam.R;
+import si.mobitel.monitor.R;
 
 public class StanjeView extends LinearLayout
 {

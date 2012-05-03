@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import org.eestecmb.oldteam.R;
+import si.mobitel.monitor.R;
 
 public class AboutDialog extends Dialog
 {

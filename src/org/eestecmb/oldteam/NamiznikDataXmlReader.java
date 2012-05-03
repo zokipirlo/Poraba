@@ -49,7 +49,7 @@ public class NamiznikDataXmlReader extends DefaultHandler
 
 	public void startElement(String uri, String name, String qName, Attributes atts)
 	{
-		if (name.trim().equals("MonitorResult"))
+		if (name.trim().equals("MonitorInfo") || name.trim().equals("MonitorResult"))
 		{
 			isMonitorResult = true;
 			return;
@@ -147,7 +147,7 @@ public class NamiznikDataXmlReader extends DefaultHandler
 
 	public void endElement(String uri, String name, String qName) throws SAXException
 	{
-		if (name.trim().equals("MonitorResult"))
+		if (name.trim().equals("MonitorInfo") || name.trim().equals("MonitorResult"))
 		{
 			isMonitorResult = true;
 			return;
@@ -375,6 +375,8 @@ public class NamiznikDataXmlReader extends DefaultHandler
 			CharArrayReader carr = new CharArrayReader(xml.toCharArray());
 			xr.parse(new InputSource(carr));
 			if (wrongUserPass)
+				return null;
+			if (!isMonitorResult)
 				return null;
 			return monitorResult;
 		}

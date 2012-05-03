@@ -7,6 +7,7 @@ import java.util.Iterator;
 import org.eestecmb.oldteam.settings.SettingsHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
+import si.mobitel.monitor.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -70,9 +71,9 @@ public class SettingsActivity extends Activity
 			username = SettingsHelper.getInstance(this).getMyPhoneNumber();
 		telefonska.setText(username);
 		passEdit.setText(SettingsHelper.getInstance(this).getPassword(username));
-		
+
 		mnamiznik.setChecked(SettingsHelper.getInstance(this).useMNamiznik(username));
-		
+
 		if (passEdit.getText() == null || passEdit.getText().length() == 0)
 			passEdit.requestFocus();
 
@@ -90,7 +91,7 @@ public class SettingsActivity extends Activity
 		@Override
 		public void onClick(View v)
 		{
-			Boolean enako = true;
+			boolean enako = true;
 			String enteredNumber = telefonska.getText().toString();
 			if (!username.equalsIgnoreCase(enteredNumber))
 			{
@@ -170,14 +171,14 @@ public class SettingsActivity extends Activity
 
 		SettingsHelper.getInstance(this).setQuotas(username, json);
 		loadQuotas();
-		//finish();
+		// finish();
 	}
 
 	public void resultError(String description)
 	{
 		if (description.equals("geslo"))
 		{
-			Toast.makeText(this, "Za uporabo na brezæiËnem omreæju potrebuje geslo", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Za uporabo na brez≈æiƒçnem omre≈æju potrebuje geslo", Toast.LENGTH_LONG).show();
 		}
 		else if (description.equals("povezava"))
 		{
@@ -185,17 +186,17 @@ public class SettingsActivity extends Activity
 		}
 		else if (description.equals("mnamiznikgeslo"))
 		{
-			Toast.makeText(this, "Za uporabo M:Namiznika na mobilnem omreæju je potrebno geslo.", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Za uporabo M:Namiznika na mobilnem omre≈æju je potrebno geslo.", Toast.LENGTH_LONG).show();
 		}
 		else if (description.equals("mnamiznikmobile"))
 		{
-			Toast.makeText(this, "Za uporabo M:Namiznika je potrebna odobritev. Levo od gumba 'Shrani' ga lahko omogoËite.\nPritisnite tipko 'Menu' za veË informacij.", Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Za uporabo M:Namiznika je potrebna odobritev. Levo od gumba 'Shrani' ga lahko omogoƒçite.\nPritisnite tipko 'Menu' za veƒç informacij.", Toast.LENGTH_LONG).show();
 		}
 	}
 
 	public void showLoader()
 	{
-		requestDialog = ProgressDialog.show(this, "", "»akam na podatke. Prosimo poËakajte...", true);
+		requestDialog = ProgressDialog.show(this, "", "ƒåakam na podatke. Prosimo poƒçakajte...", true);
 	}
 
 	public void hideLoader()
@@ -210,6 +211,7 @@ public class SettingsActivity extends Activity
 		final JSONObject json = SettingsHelper.getInstance(this).getQuotas(username);
 		if (json == null)
 			return;
+		//final float scale = this.getResources().getDisplayMetrics().density;
 		@SuppressWarnings("unchecked")
 		Iterator<String> iter = json.keys();
 		while (iter.hasNext())
@@ -220,7 +222,7 @@ public class SettingsActivity extends Activity
 			cb.setTextColor(Color.parseColor("#4c1212"));
 			cb.setChecked(json.optBoolean(key, true));
 			cb.setButtonDrawable(R.drawable.check);
-			cb.setPadding(40, cb.getPaddingTop(), 20, cb.getPaddingBottom());
+			//cb.setPadding(cb.getPaddingLeft() + (int) (10.0f * scale + 0.5f), cb.getPaddingTop(), cb.getPaddingRight(), cb.getPaddingBottom());
 			cb.setOnCheckedChangeListener(new OnCheckedChangeListener()
 			{
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
@@ -247,7 +249,7 @@ public class SettingsActivity extends Activity
 		hideLoader();
 		super.onDestroy();
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -264,12 +266,17 @@ public class SettingsActivity extends Activity
 			case R.id.aboutMNamiznik:
 				AlertDialog.Builder about = new Builder(this);
 				about.setTitle("M:Namiznik");
-				about.setMessage("Pri uporabi M:Vrat se podatki, ki se prenaπajo ne πtejejo kot preneπeni podatki, oz. povedano drugaËe je brezplaËno.\n" +
-						"Ker je uporaba M:Vrat brezplaËna se najprej probajo podatki pridobiti od tam, Ëe gre karkoli narobe pa se poskusi preko M:Namiznika.\n" +
-						"Pri uporabi M:Namiznika se pridobljeni podatki πtejejo kot podatkovni promet. V primeru da nimate zakupljenih koliËin ali ste jih presegli se vam ti podatki zaraËunajo.\n" +
-						"Uporabo M:Namiznika na mobilnem omreæju lahko omogoËite v nastavitvah. Na brezæiËnem omreæju je v vsakem primeru omogoËena.");
+				about.setMessage("Pri uporabi M:Vrat se podatki, ki se prena≈°ajo ne ≈°tejejo kot prene≈°eni podatki, oz. povedano drugaƒçe, je brezplaƒçno.\n" + "Ker je uporaba M:Vrat brezplaƒçna se najprej probajo podatki pridobiti od tam, ƒçe gre karkoli narobe pa se poskusi preko M:Namiznika.\n"
+						+ "Pri uporabi M:Namiznika se pridobljeni podatki ≈°tejejo kot podatkovni promet. V primeru da nimate zakupljenih koliƒçin ali ste jih presegli se vam ti podatki zaraƒçunajo.\n" + "Uporabo M:Namiznika na mobilnem omre≈æju lahko omogoƒçite v nastavitvah. Na brez≈æiƒçnem omre≈æju je v vsakem primeru omogoƒçena.");
 				about.setNeutralButton("OK", null);
 				about.show();
+				return true;
+			case R.id.refresh:
+				if (application == null)
+					application = ((MobitelMonitor) getApplicationContext());
+				application.lastRefresh = -1;
+				SettingsHelper.getInstance(this).setLastRefresh(application.lastPhoneNum, -1);
+				refreshQuotas();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

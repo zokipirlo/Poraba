@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import org.eestecmb.oldteam.R;
+import si.mobitel.monitor.R;
 
 public class PorabeView extends TableLayout
 {

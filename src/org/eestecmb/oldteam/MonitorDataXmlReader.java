@@ -1,7 +1,7 @@
 package org.eestecmb.oldteam;
 
-import java.io.CharArrayReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -362,7 +362,7 @@ public class MonitorDataXmlReader extends DefaultHandler
 		}
 	}
 
-	public MonitorResult parseXML(String xml)
+	public MonitorResult parseXML(Reader isr)
 	{
 		try
 		{
@@ -371,9 +371,10 @@ public class MonitorDataXmlReader extends DefaultHandler
 			SAXParser sp = spf.newSAXParser();
 			XMLReader xr = sp.getXMLReader();
 			xr.setContentHandler(this);
-			CharArrayReader carr = new CharArrayReader(xml.toCharArray());
-			xr.parse(new InputSource(carr));
+			xr.parse(new InputSource(isr));
 			if (wrongUserPass)
+				return null;
+			if (!isMonitorInfo)
 				return null;
 			return monitorResult;
 		}
@@ -393,5 +394,4 @@ public class MonitorDataXmlReader extends DefaultHandler
 			return null;
 		}
 	}
-
 }

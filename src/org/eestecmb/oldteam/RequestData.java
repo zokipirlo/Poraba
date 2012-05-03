@@ -1,5 +1,6 @@
 package org.eestecmb.oldteam;
 
+import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
@@ -229,7 +230,7 @@ public class RequestData extends AsyncTask<String, String, MonitorResult>
 			String xml = EntityUtils.toString(httpResponse.getEntity());
 			Log.d("MONITOR", xml);
 			MonitorDataXmlReader xmlReader = new MonitorDataXmlReader();
-			result = xmlReader.parseXML(xml);
+			result = xmlReader.parseXML(new CharArrayReader(xml.toCharArray()));
 			if (result != null);
 				SettingsHelper.getInstance(c).setLastResult(telefonska, xml);
 		}

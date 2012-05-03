@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.eestecmb.oldteam.settings.SettingsHelper;
 import org.json.JSONObject;
+import si.mobitel.monitor.R;
 
 import android.content.Context;
 import android.content.res.Configuration;

@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.eestecmb.oldteam.settings.SettingsHelper;
+import si.mobitel.monitor.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,18 +15,28 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
 public class PorabaActivity extends Activity
 {
+	private AdView adView = null;
 	RequestData rd;
 	MonitorResult result;
 	Quota q;
@@ -34,7 +45,9 @@ public class PorabaActivity extends Activity
 	LinearLayout paketLL;
 	TextView naslov;
 	ProgressDialog requestDialog;
+	RelativeLayout holder;
 	ScrollView scroll;
+	FrameLayout adHolder;
 	boolean isLoading = false;
 
 	// Se poklice, ko se ustvari ta Activity (samo enkrat)
@@ -43,14 +56,18 @@ public class PorabaActivity extends Activity
 		super.onCreate(savedInstanceState);
 		isLoading = true;
 		myDialog = new AboutDialog(this);
-		if (scroll == null)
+		if (holder == null)
 		{
 			LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			scroll = (ScrollView) inflater.inflate(R.layout.paket, null);
+			holder = (RelativeLayout) inflater.inflate(R.layout.paket, null);
 		}
 
-		setContentView(scroll);
+		setContentView(holder);
 
+		if (adHolder == null)
+			adHolder = (FrameLayout) findViewById(R.id.AdHolder);
+		if (scroll == null)
+			scroll = (ScrollView) findViewById(R.id.PaketScroll);
 		if (paketLL == null)
 			paketLL = (LinearLayout) findViewById(R.id.PaketLayout);
 		if (naslov == null)
@@ -63,6 +80,7 @@ public class PorabaActivity extends Activity
 	protected void onResume()
 	{
 		super.onResume();
+		showAd();
 		getData();
 	}
 
@@ -80,8 +98,8 @@ public class PorabaActivity extends Activity
 		paketLL.removeAllViews();
 		paketLL.addView(naslov);
 
-		// Pridobi telefonsko iz nastavitev. »e se razlikuje od tiste v getApp() je uporabnik spremenil πtevilko v nastvitvah
-		// »e je prazen String potem pridobi telfonsko iz telefona.
+		// Pridobi telefonsko iz nastavitev. ƒçe se razlikuje od tiste v getApp() je uporabnik spremenil ≈°tevilko v nastavitvah
+		// ƒçe je prazen String potem pridobi telfonsko iz telefona.
 		String username = SettingsHelper.getInstance(this).getLastPhoneNumber();
 		if (username.length() == 0)
 			username = SettingsHelper.getInstance(this).getMyPhoneNumber();
@@ -95,7 +113,8 @@ public class PorabaActivity extends Activity
 		long lastMilis = SettingsHelper.getInstance(this).getLastRefresh(username);
 		lastMilis += 600000;
 		
-		if (!username.equalsIgnoreCase(getApp().lastPhoneNum) || lastMilis < nowMilis)
+		MonitorResult lastResult = SettingsHelper.getInstance(this).getLastResult(username);
+		if (!username.equalsIgnoreCase(getApp().lastPhoneNum) || lastMilis < nowMilis || lastResult == null)
 		{
 			if (rd != null)
 				rd.cancel(true);
@@ -103,12 +122,11 @@ public class PorabaActivity extends Activity
 			rd.execute(username);
 			return;
 		}
-		
-		if (getApp().monitorResult == null)
+		else
 		{
-			getApp().monitorResult = SettingsHelper.getInstance(this).getLastResult(username);
+			getApp().monitorResult = lastResult;
+			showResult(getApp().monitorResult);
 		}
-		showResult(getApp().monitorResult);
 	}
 
 	public void showResult(MonitorResult result)
@@ -153,14 +171,66 @@ public class PorabaActivity extends Activity
 		}
 	}
 	
+	private void showAd()
+	{
+		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo ni = cm.getActiveNetworkInfo();
+
+		// 0 : nepovezan | 1 : wifi | 2 : mobile | -1 : neznano
+		int status = 0;
+		if (ni != null && ni.isConnected())
+		{
+			Log.d("MONITOR", "Connected ...");
+			if (ni.getType() == ConnectivityManager.TYPE_WIFI)
+			{
+				Log.d("MONITOR", "Wifi");
+				status = 1;
+			}
+			else if (ni.getType() == ConnectivityManager.TYPE_MOBILE)
+			{
+				Log.d("MONITOR", "Mobile");
+				status = 2;
+			}
+			else
+			{
+				Log.d("MONITOR", "Unknown");
+				status = -1;
+			}
+		}
+		
+		//show ad only on wi-fi
+		if (status == 1)
+		{
+			// Create the adView
+			if (adView == null)
+			{
+				adView = new AdView(this, AdSize.BANNER, "a14f05753e8ea7f");
+				// Initiate a generic request to load it with an ad
+				adView.loadAd(new AdRequest());
+			}
+
+		    // Add the adView to it
+			if (adHolder.indexOfChild(adView) == -1)
+			{
+			    adHolder.addView(adView);
+			}
+			adHolder.setVisibility(View.VISIBLE);
+		}
+		else
+		{
+			adView = null;
+			adHolder.setVisibility(View.GONE);
+		}
+	}
+	
 	public void resultError(String description)
 	{
 		if (description.equals("geslo"))
 		{
 			AlertDialog.Builder dialog = new Builder(this);
 			dialog.setTitle("Poraba");
-			dialog.setMessage("Potrebno je geslo iz portala Planet. Ali ga æelite vnesti sedaj?");
-			dialog.setPositiveButton("Æelim", new OnClickListener()
+			dialog.setMessage("Potrebno je geslo iz portala Planet. Ali ga ≈æelite vnesti sedaj?");
+			dialog.setPositiveButton("≈Ωelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
@@ -168,12 +238,12 @@ public class PorabaActivity extends Activity
 					showSettings();
 				}
 			});
-			dialog.setNegativeButton("Ne æelim", new OnClickListener()
+			dialog.setNegativeButton("Ne ≈æelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
 				{
-					Toast.makeText(PorabaActivity.this, "Za uporabo na brezæiËnem omreæju je potrebno geslo. Vnesite ga v nastavitvah in poskusite ponovno.", Toast.LENGTH_LONG).show();
+					Toast.makeText(PorabaActivity.this, "Za uporabo na brez≈æiƒçnem omre≈æju je potrebno geslo. Vnesite ga v nastavitvah in poskusite ponovno.", Toast.LENGTH_LONG).show();
 				}
 			});
 			dialog.show();
@@ -186,8 +256,8 @@ public class PorabaActivity extends Activity
 		{
 			AlertDialog.Builder dialog = new Builder(this);
 			dialog.setTitle("Poraba");
-			dialog.setMessage("Za uporabo M:Namiznika je potrebno geslo iz portala Planet. Ali ga æelite vnesti sedaj?");
-			dialog.setPositiveButton("Æelim", new OnClickListener()
+			dialog.setMessage("Za uporabo M:Namiznika je potrebno geslo iz portala Planet. Ali ga ≈æelite vnesti sedaj?");
+			dialog.setPositiveButton("≈Ωelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
@@ -195,7 +265,7 @@ public class PorabaActivity extends Activity
 					showSettings();
 				}
 			});
-			dialog.setNegativeButton("Ne æelim", new OnClickListener()
+			dialog.setNegativeButton("Ne ≈æelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
@@ -209,8 +279,8 @@ public class PorabaActivity extends Activity
 		{
 			AlertDialog.Builder dialog = new Builder(this);
 			dialog.setTitle("Poraba");
-			dialog.setMessage("M:Vrata se ne odzivajo. Uporabo M:Namiznika morate potrditi v nastavitvah.\nÆelite storiti to sedaj?");
-			dialog.setPositiveButton("Æelim", new OnClickListener()
+			dialog.setMessage("M:Vrata se ne odzivajo. Uporabo M:Namiznika morate potrditi v nastavitvah.\n≈Ωelite storiti to sedaj?");
+			dialog.setPositiveButton("≈Ωelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
@@ -218,25 +288,25 @@ public class PorabaActivity extends Activity
 					showSettings();
 				}
 			});
-			dialog.setNegativeButton("Ne æelim", new OnClickListener()
+			dialog.setNegativeButton("Ne ≈æelim", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
 				{
-					Toast.makeText(PorabaActivity.this, "Za uporabo M:Namiznika je potrebna odobritev. OmogoËite lahko v nastavitvah.", Toast.LENGTH_LONG).show();
+					Toast.makeText(PorabaActivity.this, "Za uporabo M:Namiznika je potrebna odobritev. Omogoƒçite lahko v nastavitvah.", Toast.LENGTH_LONG).show();
 				}
 			});
-			dialog.setNeutralButton("VeË o tem", new OnClickListener()
+			dialog.setNeutralButton("Veƒç o tem", new OnClickListener()
 			{
 				@Override
 				public void onClick(DialogInterface dialog, int which)
 				{
 					AlertDialog.Builder about = new Builder(PorabaActivity.this);
 					about.setTitle("M:Namiznik");
-					about.setMessage("Pri uporabi M:Vrat se podatki, ki se prenaπajo ne πtejejo kot preneπeni podatki, oz. povedano drugaËe je brezplaËno.\n" +
-							"Ker je uporaba M:Vrat brezplaËna se najprej probajo podatki pridobiti od tam, Ëe gre karkoli narobe pa se poskusi preko M:Namiznika.\n" +
-							"Pri uporabi M:Namiznika se pridobljeni podatki πtejejo kot podatkovni promet. V primeru da nimate zakupljenih koliËin ali ste jih presegli se vam ti podatki zaraËunajo.\n" +
-							"Uporabo M:Namiznika na mobilnem omreæju lahko omogoËite v nastavitvah. Na brezæiËnem omreæju je v vsakem primeru omogoËena.");
+					about.setMessage("Pri uporabi M:Vrat se podatki, ki se prena≈°ajo ne ≈°tejejo kot prene≈°eni podatki, oz. povedano drugaƒçe, je brezplaƒçno.\n" +
+							"Ker je uporaba M:Vrat brezplaƒçna se najprej probajo podatki pridobiti od tam, ƒçe gre karkoli narobe pa se poskusi preko M:Namiznika.\n" +
+							"Pri uporabi M:Namiznika se pridobljeni podatki ≈°tejejo kot podatkovni promet. V primeru da nimate zakupljenih koliƒçin ali ste jih presegli se vam ti podatki zaraƒçunajo.\n" +
+							"Uporabo M:Namiznika na mobilnem omre≈æju lahko omogoƒçite v nastavitvah. Na brez≈æiƒçnem omre≈æju je v vsakem primeru omogoƒçena.");
 					about.setNeutralButton("OK", null);
 					about.show();
 				}
@@ -248,7 +318,7 @@ public class PorabaActivity extends Activity
 	public void showLoader()
 	{
 		if (requestDialog == null || !requestDialog.isShowing())
-			requestDialog = ProgressDialog.show(this, "", "»akam na podatke. Prosimo poËakajte...", true);
+			requestDialog = ProgressDialog.show(this, "", "ƒåakam na podatke. Prosimo poƒçakajte...", true);
 	}
 
 	public void hideLoader()
@@ -260,6 +330,8 @@ public class PorabaActivity extends Activity
 	@Override
 	protected void onDestroy()
 	{
+		if (adView != null)
+			adView.destroy();
 		hideLoader();
 		super.onDestroy();
 	}

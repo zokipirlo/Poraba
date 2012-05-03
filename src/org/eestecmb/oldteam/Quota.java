@@ -1,5 +1,6 @@
 package org.eestecmb.oldteam;
 
+
 public class Quota
 {
 	public String shortDescription = "";
