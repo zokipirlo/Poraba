@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 public class SettingsHelper
 {
@@ -97,10 +98,18 @@ public class SettingsHelper
 
 		if (password.length() == 0)
 			return "";
+		
+		try
+		{
+			byte[] pass = HexDump.hexStringToByteArray(password);
+			return new String(new RC4(EncryptionKey.KEY).rc4(pass));
+		}
+		catch (Exception e) {
+			if (mContext != null)
+				Toast.makeText(mContext, "Napaka pri branju gesla!", Toast.LENGTH_LONG).show();
+		}
 
-		byte[] pass = HexDump.hexStringToByteArray(password);
-
-		return new String(new RC4(EncryptionKey.KEY).rc4(pass));
+		return "";
 	}
 
 	public void setPassword(String phoneNumber, String password)
